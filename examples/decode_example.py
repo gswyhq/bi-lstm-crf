@@ -1,9 +1,10 @@
+
 import time
 
 from dl_segmenter import get_or_create, DLSegmenter
 
 if __name__ == '__main__':
-    segmenter: DLSegmenter = get_or_create("../data/default-config.json",
+    segmenter= DLSegmenter.get_or_create("../data/default-config.json",
                                            src_dict_path="../data/src_dict.json",
                                            tgt_dict_path="../data/tgt_dict.json",
                                            weights_path="../models/weights.01-0.15.h5")
@@ -38,4 +39,4 @@ if __name__ == '__main__':
             print(tag)
             # for s, t in zip(sent, tag):
             #     print(s, t)
-        print(f"cost {(time.time() - start_time) * 1000}ms")
+        print("cost {(time.time() - start_time) * 1000}ms")

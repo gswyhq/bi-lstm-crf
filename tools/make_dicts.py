@@ -1,3 +1,6 @@
+
+import sys
+sys.path.append('.')
 import argparse
 
 from dl_segmenter.utils import make_dictionaries

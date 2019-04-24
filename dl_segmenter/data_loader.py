@@ -69,6 +69,7 @@ class DataLoader:
     @staticmethod
     def load_data(h5_file_path, frac=None):
         with h5py.File(h5_file_path, 'r') as dfile:
+            # del dfile['optimizer_weights']
             X, Y = dfile['X'][:], dfile['Y'][:]
 
             if frac is not None:

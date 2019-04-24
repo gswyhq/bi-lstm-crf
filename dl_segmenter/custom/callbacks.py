@@ -47,7 +47,7 @@ class WatchScheduler(Callback):
         lr = float(K.get_value(self.model.optimizer.lr))
         watch_value = logs.get(self.watch)
         if watch_value is None:
-            raise ValueError(f"Watched value '{self.watch}' don't exist")
+            raise ValueError("Watched value '{self.watch}' don't exist")
 
         if lr <= self.min_lr:
             return
@@ -56,7 +56,7 @@ class WatchScheduler(Callback):
 
         if watch_value > self.history_cache.mean():
             lr = self.schedule(epoch, lr)
-            print(f"Update learning rate: {lr}")
+            print("Update learning rate: {lr}")
             K.set_value(self.model.optimizer.lr, lr)
 
 

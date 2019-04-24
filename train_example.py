@@ -7,18 +7,24 @@ from dl_segmenter.data_loader import DataLoader
 import matplotlib.pyplot as plt
 import os
 
+# 对于.bz2结尾的文件
+# bzip2 -d all.bz2
+# bunzip2 all.bz2
+# gswyhq@gswyhq-pc:~/data/word-vectors$ bzip2 -k sgns.target.word-character.char1-1.dynwin5.thr10.neg5.dim300.iter5
+#
+
 if __name__ == '__main__':
     h5_dataset_path = "data/2014_processed.h5"  # 转换为hdf5格式的数据集
     config_save_path = "config/default-config.json"  # 模型配置路径
     weights_save_path = "models/weights.{epoch:02d}-{val_loss:.2f}.h5"  # 模型权重保存路径
-    init_weights_path = "models/weights.23-0.02.sgdr.h5"  # 预训练模型权重文件路径
-    embedding_file_path = "G:\data\word-vectors\word.embdding.iter5"  # 词向量文件路径，若不使用设为None
-    embedding_file_path = None  # 词向量文件路径，若不使用设为None
+    init_weights_path = "models/weights.32--0.18.h5"  # 预训练模型权重文件路径
+    # embedding_file_path = "G:\data\word-vectors\word.embdding.iter5"  # 词向量文件路径，若不使用设为None
+    embedding_file_path = './sgns.target.word-character.char1-1.dynwin5.thr10.neg5.dim300.iter5'  # 词向量文件路径，若不使用设为None
 
     src_dict_path = "config/src_dict.json"  # 源字典路径
     tgt_dict_path = "config/tgt_dict.json"  # 目标字典路径
     batch_size = 32
-    epochs = 128
+    epochs = 32
     num_gpu = 1
     max_seq_len = 150
     initial_epoch = 0
@@ -37,11 +43,13 @@ if __name__ == '__main__':
                              sparse_target=False)
 
     config = {
-        "vocab_size": data_loader.src_vocab_size,
-        "chunk_size": data_loader.tgt_vocab_size,
-        "sparse_target": data_loader.sparse_target,
+        "vocab_size": data_loader.src_vocab_size, # 6864
+        "chunk_size": data_loader.tgt_vocab_size, # 259
+        "sparse_target": data_loader.sparse_target, # False
         "embed_dim": 300,
         "bi_lstm_units": 256,
+        "max_num_words": 20000,
+        "dropout_rate": 0.1
     }
 
     os.makedirs(os.path.dirname(weights_save_path), exist_ok=True)
@@ -54,8 +62,30 @@ if __name__ == '__main__':
 
     save_config(segmenter, config_save_path)
 
-    segmenter.model.summary()
-
+    summary = segmenter.model.summary()
+    print(summary)
+    '''
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    word_input (InputLayer)      (None, None)              0         
+    _________________________________________________________________
+    word_emb (Embedding)         (None, None, 300)         2059500   
+    _________________________________________________________________
+    bidirectional_1 (Bidirection (None, None, 256)         439296    
+    _________________________________________________________________
+    dropout_1 (Dropout)          (None, None, 256)         0         
+    _________________________________________________________________
+    dense_1 (Dense)              (None, None, 260)         66820     
+    _________________________________________________________________
+    crf_1 (CRF)                  (None, None, 260)         135980    
+    =================================================================
+    Total params: 2,701,596
+    Trainable params: 642,096
+    Non-trainable params: 2,059,500
+    _________________________________________________________________
+    None
+    '''
     ck = SingleModelCK(weights_save_path,
                        segmenter.model,
                        save_best_only=True,
@@ -87,5 +117,5 @@ if __name__ == '__main__':
                                            callbacks=[ck, log, lr_scheduler],
                                            initial_epoch=initial_epoch)
 
-    # lr_finder.plot_loss()
-    # plt.savefig("loss.png")
+    lr_finder.plot_loss()
+    plt.savefig("loss.png")

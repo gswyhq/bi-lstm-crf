@@ -1,0 +1,10 @@
+# pipreqs /home/gswyhq/nlp_server
+# sudo pip3 install -r requirements.txt -i http://pypi.douban.com/simple --trusted-host=pypi.douban.com
+Cython==0.26
+numpy==1.13.3
+tensorflow==1.4.0
+Keras==2.1.4
+Keras-Preprocessing==1.0.9
+matplotlib==2.1.0
+-e git://github.com/keras-team/keras-contrib.git#egg=keras-contrib
+h5py==2.7.1

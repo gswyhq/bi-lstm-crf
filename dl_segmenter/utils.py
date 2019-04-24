@@ -78,6 +78,8 @@ def get_embedding_index(embedding_file):
     with open(os.path.join(embedding_file), encoding='UTF-8') as f:
         for line in f:
             values = line.split()
+            if len(values) < 10:
+                continue
             word = values[0]
             coefs = np.asarray(values[1:], dtype=np.float32)
             embedding_index[word] = coefs
@@ -85,6 +87,10 @@ def get_embedding_index(embedding_file):
 
 
 def create_embedding_matrix(embeddings_index, word_index, vocab_size, embed_dim):
+    print('embeddings_index, word_index, vocab_size, embed_dim={}'.format([len(embeddings_index),
+                                                                           len(word_index),
+                                                                           vocab_size,
+                                                                           embed_dim]))
     embedding_matrix = np.zeros((vocab_size, embed_dim))
     for word, i in word_index.items():
         if i >= vocab_size:

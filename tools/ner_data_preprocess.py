@@ -6,7 +6,7 @@ def print_process(process):
     num_processed = int(30 * process)
     num_unprocessed = 30 - num_processed
     print(
-        f"{''.join(['['] + ['='] * num_processed + ['>'] + [' '] * num_unprocessed + [']'])}, {(process * 100):.2f} %")
+        "{''.join(['['] + ['='] * num_processed + ['>'] + [' '] * num_unprocessed + [']'])}, {(process * 100):.2f} %")
 
 
 def convert_to_bis(source_dir, target_path, log=False, combine=False, single_line=True):

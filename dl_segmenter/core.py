@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+import pickle
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Lock
@@ -33,6 +34,7 @@ class DLSegmenter:
                  emb_matrix=None,
                  weights_path=None,
                  rule_fn=None,
+                 max_num_words = 300,
                  src_tokenizer: Tokenizer = None,
                  tgt_tokenizer: Tokenizer = None):
         self.vocab_size = vocab_size
@@ -172,7 +174,10 @@ class DLSegmenter:
                     src_tokenizer = load_dictionary(src_dict_path, encoding)
                     config['src_tokenizer'] = src_tokenizer
                     if embedding_file is not None:
-                        emb_matrix = create_embedding_matrix(get_embedding_index(embedding_file),
+                        embedding_index = get_embedding_index(embedding_file)
+                        print('字词向量大小：{}'.format(len(embedding_index)))
+
+                        emb_matrix = create_embedding_matrix(embedding_index,
                                                              src_tokenizer.word_index,
                                                              min(config['vocab_size'] + 1, config['max_num_words']),
                                                              config['embed_dim'])

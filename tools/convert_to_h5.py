@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append('.')
 import argparse
 
 from dl_segmenter.data_loader import DataLoader
